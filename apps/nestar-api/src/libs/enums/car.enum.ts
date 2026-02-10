@@ -1,0 +1,104 @@
+import { registerEnumType } from '@nestjs/graphql';
+
+export enum CarType {
+	SUV = 'SUV',
+	TRUCK = 'TRUCK',
+	LIGHT = 'LIGHT',
+	SEDAN = 'SEDAN',
+	ELECTRIC = 'ELECTRIC',
+	CONVERTIBLE = 'CONVERTIBLE',
+	JEEP = 'JEEP',
+	HATCHBACK = 'HATCHBACK',
+	COUPE = 'COUPE',
+	SPORTS = 'SPORTS',
+	MINIVAN = 'MINIVAN',
+	MPV = 'MPV',
+	COMPACT = 'COMPACT',
+	MIDSIZE = 'MIDSIZE',
+	LARGE = 'LARGE',
+	OTHER = 'OTHER',
+}
+registerEnumType(CarType, {
+	name: 'CarType',
+});
+
+export enum CarStatus {
+	ACTIVE = 'ACTIVE',
+	SOLD = 'SOLD',
+	DELETE = 'DELETE',
+}
+registerEnumType(CarStatus, {
+	name: 'CarStatus',
+});
+
+export enum CarLocation {
+	SEOUL = 'SEOUL',
+	BUSAN = 'BUSAN',
+	INCHEON = 'INCHEON',
+	DAEGU = 'DAEGU',
+	GYEONGJU = 'GYEONGJU',
+	GWANGJU = 'GWANGJU',
+	CHONJU = 'CHONJU',
+	DAEJON = 'DAEJON',
+	JEJU = 'JEJU',
+	ULSAN = 'ULSAN',
+	SUWON = 'SUWON',
+	CHANGWON = 'CHANGWON',
+	GOYANG = 'GOYANG',
+	YONGIN = 'YONGIN',
+	SEONGNAM = 'SEONGNAM',
+	BUCHEON = 'BUCHEON',
+	ANSAN = 'ANSAN',
+	ANYANG = 'ANYANG',
+	JEONJU = 'JEONJU',
+	CHENAN = 'CHENAN',
+	NAMYANGJU = 'NAMYANGJU',
+	HWASEONG = 'HWASEONG',
+	GIMHAE = 'GIMHAE',
+	PYEONGTAEK = 'PYEONGTAEK',
+	GUMI = 'GUMI',
+	JINJU = 'JINJU',
+	IKSAN = 'IKSAN',
+	MOKPO = 'MOKPO',
+	GUNSAN = 'GUNSAN',
+	SUNCHEON = 'SUNCHEON',
+	GANGNEUNG = 'GANGNEUNG',
+	ANDONG = 'ANDONG',
+	TONGYEONG = 'TONGYEONG',
+	YEOSU = 'YEOSU',
+	POHANG = 'POHANG',
+	CHUNCHEON = 'CHUNCHEON',
+	WONJU = 'WONJU',
+	ASAN = 'ASAN',
+	GIMCHEON = 'GIMCHEON',
+	YANGSAN = 'YANGSAN',
+	OSAN = 'OSAN',
+	GWANGMYEONG = 'GWANGMYEONG',
+	SIHEUNG = 'SIHEUNG',
+	GUNPO = 'GUNPO',
+	ICEHAN = 'ICEHAN',
+	UIJEONGBU = 'UIJEONGBU',
+	POCHEON = 'POCHEON',
+	GURI = 'GURI',
+	DONGDUCHEN = 'DONGDUCHEN',
+	GAPYEONG = 'GAPYEONG',
+	YANGPYEONG = 'YANGPYEONG',
+	YEONJU = 'YEONJU',
+	ANSEONG = 'ANSEONG'
+}
+registerEnumType(CarLocation, {
+	name: 'CarLocation',
+});
+
+export enum CarFuelType {
+	GASOLINE = 'GASOLINE',
+	DIESEL = 'DIESEL',
+	LPG = 'LPG',
+	HYBRID = 'HYBRID',
+	ELECTRIC = 'ELECTRIC',
+	HYDROGEN = 'HYDROGEN',
+	OTHER = 'OTHER',
+}
+registerEnumType(CarFuelType, {
+	name: 'CarFuelType',
+});
