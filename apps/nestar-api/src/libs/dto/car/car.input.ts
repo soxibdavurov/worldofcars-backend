@@ -212,3 +212,36 @@ export class CarsInquiry {
 	@Field(() => CarInquirySearch)
 	search: CarInquirySearch;
 }
+
+@InputType()
+class AgentCarsInquirySearch {
+	@IsOptional()
+	@Field(() => String, { nullable: true })
+	memberId?: ObjectId;
+}
+
+@InputType()
+export class AgentCarsInquiry {
+	@IsNotEmpty()
+	@Min(1)
+	@Field(() => Int)
+	page: number;
+
+	@IsNotEmpty()
+	@Min(1)
+	@Field(() => Int)
+	limit: number;
+
+	@IsOptional()
+	@IsIn(availableCarSorts)
+	@Field(() => String, { nullable: true })
+	sort?: string;
+
+	@IsOptional()
+	@Field(() => Direction, { nullable: true })
+	direction?: Direction;
+
+	@IsOptional()
+	@Field(() => AgentCarsInquirySearch, { nullable: true })
+	search?: AgentCarsInquirySearch;
+}

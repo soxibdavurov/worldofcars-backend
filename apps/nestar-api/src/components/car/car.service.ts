@@ -5,6 +5,7 @@ import { Cars, Car } from '../../libs/dto/car/car';
 import {
 	CarsInquiry,
 	CarInput,
+	AgentCarsInquiry,
 } from '../../libs/dto/car/car.input';
 import { Direction, Message } from '../../libs/enums/common.enum';
 import { MemberService } from '../member/member.service';
@@ -153,6 +154,40 @@ export class CarService {
 
 	public async getVisited(memberId: ObjectId, input: OrdinaryInquiry): Promise<Cars> {
 		return await this.viewService.getVisitedCars(memberId, input);
+	}
+
+	public async getAgentCars(memberId: ObjectId, input: AgentCarsInquiry): Promise<Cars> {
+		const match: T = { carStatus: CarStatus.ACTIVE };
+		const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };
+
+		// Add memberId filter if provided
+		if (input.search?.memberId) {
+			match.memberId = shapeIntoMongoObjectId(input.search.memberId);
+		}
+
+		console.log('getAgentCars match:', match);
+
+		const result = await this.carModel
+			.aggregate([
+				{ $match: match },
+				{ $sort: sort },
+				{
+					$facet: {
+						list: [
+							{ $skip: (input.page - 1) * input.limit },
+							{ $limit: input.limit },
+							lookupAuthMemberLiked(memberId),
+							lookupMember,
+							{ $unwind: '$memberData' },
+						],
+						metaCounter: [{ $count: 'total' }],
+					},
+				},
+			])
+			.exec();
+		if (!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+
+		return result[0];
 	}
 
 	private shapeMatchQuery(match: T, input: CarsInquiry): void {

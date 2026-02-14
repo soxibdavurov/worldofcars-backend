@@ -470,7 +470,7 @@
 					"autoinc": false,
 					"charset": "",
 					"collation": "",
-					"enum": "USER AGENT ADMIN",
+					"enum": "USER DEALER ADMIN",
 					"unsigned": false,
 					"zerofill": false,
 					"isHidden": false,

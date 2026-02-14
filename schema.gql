@@ -83,7 +83,7 @@ type Member {
 
 enum MemberType {
   USER
-  AGENT
+  DEALER
   ADMIN
 }
 
@@ -318,6 +318,7 @@ type Query {
   getAllPropertiesByAdmin(input: AllPropertiesInquiry!): Properties!
   getCar(carId: String!): Car!
   getCars(input: CarsInquiry!): Cars!
+  getAgentCars(input: AgentCarsInquiry!): Cars!
   getBoardArticle(articleId: String!): BoardArticle!
   getBoardArticles(input: BoardArticlesInquiry!): BoardArticles!
   getAllBoardArticlesByAdmin(input: AllBoardArticlesInquiry!): BoardArticles!
@@ -462,6 +463,18 @@ input CarMileageRange {
 input CarPeriodsRange {
   start: DateTime!
   end: DateTime!
+}
+
+input AgentCarsInquiry {
+  page: Int!
+  limit: Int!
+  sort: String
+  direction: Direction
+  search: AgentCarsInquirySearch
+}
+
+input AgentCarsInquirySearch {
+  memberId: String
 }
 
 input BoardArticlesInquiry {

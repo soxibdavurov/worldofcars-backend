@@ -4,6 +4,7 @@ import { Cars, Car, CarLabel } from '../../libs/dto/car/car';
 import {
 	CarsInquiry,
 	CarInput,
+	AgentCarsInquiry,
 } from '../../libs/dto/car/car.input';
 import { OrdinaryInquiry } from '../../libs/dto/property/property.input';
 import { MemberType } from '../../libs/enums/member.enum';
@@ -21,7 +22,7 @@ import { AuthGuard } from '../auth/guards/auth.guard';
 export class CarResolver {
 	constructor(private readonly carService: CarService) { }
 
-	@Roles(MemberType.ADMIN, MemberType.AGENT)
+	@Roles(MemberType.ADMIN, MemberType.DEALER)
 	@UseGuards(RolesGuard)
 	@Mutation(() => Car)
 	public async createCar(
@@ -44,7 +45,7 @@ export class CarResolver {
 		return await this.carService.getCar(memberId, carId);
 	}
 
-	@Roles(MemberType.ADMIN, MemberType.AGENT)
+	@Roles(MemberType.ADMIN, MemberType.DEALER)
 	@UseGuards(RolesGuard)
 	@Mutation((returns) => Car)
 	public async updateCar(
@@ -95,6 +96,16 @@ export class CarResolver {
 	): Promise<Cars> {
 		console.log('Query: getVisitedCars');
 		return await this.carService.getVisited(memberId, input);
+	}
+
+	@UseGuards(WithoutGuard)
+	@Query((returns) => Cars)
+	public async getAgentCars(
+		@Args('input') input: AgentCarsInquiry,
+		@AuthMember('_id') memberId: ObjectId,
+	): Promise<Cars> {
+		console.log('Query: getAgentCars');
+		return await this.carService.getAgentCars(memberId, input);
 	}
 
 	/** ADMIN **/
