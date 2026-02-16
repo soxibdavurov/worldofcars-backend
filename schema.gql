@@ -308,17 +308,17 @@ type Query {
   checkAuth: String!
   checkAuthRoles: String!
   getMember(memberId: String!): Member!
-  getAgents(input: AgentsInquiry!): Members!
+  getDealers(input: DealersInquiry!): Members!
   getAllMembersByAdmin(input: MembersInquiry!): Members!
   getProperty(propertyId: String!): Property!
   getProperties(input: PropertiesInquiry!): Properties!
   getFavorites(input: OrdinaryInquiry!): Properties!
   getVisited(input: OrdinaryInquiry!): Properties!
-  getAgentProperties(input: AgentPropertiesInquiry!): Properties!
+  getDealerProperties(input: DealerPropertiesInquiry!): Properties!
   getAllPropertiesByAdmin(input: AllPropertiesInquiry!): Properties!
   getCar(carId: String!): Car!
   getCars(input: CarsInquiry!): Cars!
-  getAgentCars(input: AgentCarsInquiry!): Cars!
+  getDealerCars(input: DealerCarsInquiry!): Cars!
   getBoardArticle(articleId: String!): BoardArticle!
   getBoardArticles(input: BoardArticlesInquiry!): BoardArticles!
   getAllBoardArticlesByAdmin(input: AllBoardArticlesInquiry!): BoardArticles!
@@ -327,7 +327,7 @@ type Query {
   getMemberFollowers(input: FollowInquiry!): Followers!
 }
 
-input AgentsInquiry {
+input DealersInquiry {
   page: Int!
   limit: Int!
   sort: String
@@ -399,7 +399,7 @@ input OrdinaryInquiry {
   limit: Int!
 }
 
-input AgentPropertiesInquiry {
+input DealerPropertiesInquiry {
   page: Int!
   limit: Int!
   sort: String
@@ -465,15 +465,15 @@ input CarPeriodsRange {
   end: DateTime!
 }
 
-input AgentCarsInquiry {
+input DealerCarsInquiry {
   page: Int!
   limit: Int!
   sort: String
   direction: Direction
-  search: AgentCarsInquirySearch
+  search: DealerCarsInquirySearch
 }
 
-input AgentCarsInquirySearch {
+input DealerCarsInquirySearch {
   memberId: String
 }
 

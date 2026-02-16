@@ -1,7 +1,7 @@
 import { Field, InputType, Int } from "@nestjs/graphql";
 import { IsIn, IsNotEmpty, IsOptional, Length, Min} from 'class-validator'
 import { MemberAuthType, MemberStatus, MemberType } from "../../enums/member.enum";
-import { availableAgentSorts, availableMemberSorts } from "../../config";
+import { availableDealerSorts, availableMemberSorts } from "../../config";
 import { Direction} from "../../enums/common.enum";
 
 @InputType()
@@ -50,7 +50,7 @@ class AISearch {
 }
 
 @InputType()
-export class AgentsInquiry {
+export class DealersInquiry {
     @IsNotEmpty()
     @Min(1)
     @Field(() => Int)
@@ -62,7 +62,7 @@ export class AgentsInquiry {
     limit: number;
 
     @IsOptional()
-    @IsIn(availableAgentSorts)
+    @IsIn(availableDealerSorts)
     @Field(() => String, { nullable: true })
     sort?: string
 

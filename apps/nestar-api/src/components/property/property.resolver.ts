@@ -2,7 +2,7 @@ import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { PropertyService } from './property.service';
 import { Properties, Property } from '../../libs/dto/property/property';
 import {
-	AgentPropertiesInquiry,
+	DealerPropertiesInquiry,
 	AllPropertiesInquiry,
 	OrdinaryInquiry,
 	PropertiesInquiry,
@@ -91,12 +91,12 @@ export class PropertyResolver {
 	@Roles(MemberType.DEALER)
 	@UseGuards(RolesGuard)
 	@Query((returns) => Properties)
-	public async getAgentProperties(
-		@Args('input') input: AgentPropertiesInquiry,
+	public async getDealerProperties(
+		@Args('input') input: DealerPropertiesInquiry,
 		@AuthMember('_id') memberId: ObjectId,
 	): Promise<Properties> {
-		console.log('Mutation: getAgentProperties');
-		return await this.propertyService.getAgentProperties(memberId, input);
+		console.log('Mutation: getDealerProperties');
+		return await this.propertyService.getDealerProperties(memberId, input);
 	}
 
 	@UseGuards(AuthGuard)

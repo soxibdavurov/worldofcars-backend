@@ -5,12 +5,16 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from '../auth/auth.module';
 import { ViewModule } from '../view/view.module';
 import CarSchema from '../../schemas/Car.model';
+import CarBrandSchema from '../../schemas/CarBrand.model';
 import { MemberModule } from '../member/member.module';
 import { LikeModule } from '../like/like.module';
 
 @Module({
 	imports: [
-		MongooseModule.forFeature([{ name: 'Car', schema: CarSchema }]), // SchemaModel
+		MongooseModule.forFeature([
+			{ name: 'Car', schema: CarSchema },
+			{ name: 'CarBrand', schema: CarBrandSchema },
+		]),
 		AuthModule,
 		ViewModule,
 		MemberModule,

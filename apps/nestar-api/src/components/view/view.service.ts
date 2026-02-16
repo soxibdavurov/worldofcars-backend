@@ -33,7 +33,15 @@ export class ViewService {
 		return await this.viewModel.findOne(search).exec();
 	}
 
+	/** 7 kundan eski ko‘rilganlarni ushbu member uchun databasedan o‘chiradi */
+	public async deleteOlderThan(memberId: ObjectId, days: number): Promise<void> {
+		const cutoff = new Date();
+		cutoff.setDate(cutoff.getDate() - days);
+		await this.viewModel.deleteMany({ memberId, updatedAt: { $lt: cutoff } }).exec();
+	}
+
 	public async getVisitedProperties(memberId: ObjectId, input: OrdinaryInquiry): Promise<Properties> {
+		await this.deleteOlderThan(memberId, 7);
 		const { page, limit } = input;
 		const match: T = { viewGroup: ViewGroup.PROPERTY, memberId: memberId };
 
@@ -72,6 +80,7 @@ export class ViewService {
 	}
 
 	public async getVisitedCars(memberId: ObjectId, input: OrdinaryInquiry): Promise<Cars> {
+		await this.deleteOlderThan(memberId, 7);
 		const { page, limit } = input;
 		const match: T = { viewGroup: ViewGroup.CAR, memberId: memberId };
 

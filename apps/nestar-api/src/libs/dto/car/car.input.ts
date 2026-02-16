@@ -214,14 +214,14 @@ export class CarsInquiry {
 }
 
 @InputType()
-class AgentCarsInquirySearch {
+class DealerCarsInquirySearch {
 	@IsOptional()
 	@Field(() => String, { nullable: true })
 	memberId?: ObjectId;
 }
 
 @InputType()
-export class AgentCarsInquiry {
+export class DealerCarsInquiry {
 	@IsNotEmpty()
 	@Min(1)
 	@Field(() => Int)
@@ -242,6 +242,6 @@ export class AgentCarsInquiry {
 	direction?: Direction;
 
 	@IsOptional()
-	@Field(() => AgentCarsInquirySearch, { nullable: true })
-	search?: AgentCarsInquirySearch;
+	@Field(() => DealerCarsInquirySearch, { nullable: true })
+	search?: DealerCarsInquirySearch;
 }

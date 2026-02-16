@@ -1,10 +1,11 @@
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { CarService } from './car.service';
 import { Cars, Car, CarLabel } from '../../libs/dto/car/car';
+import { carBrand } from '../../libs/dto/car/carBrand';
 import {
 	CarsInquiry,
 	CarInput,
-	AgentCarsInquiry,
+	DealerCarsInquiry,
 } from '../../libs/dto/car/car.input';
 import { OrdinaryInquiry } from '../../libs/dto/property/property.input';
 import { MemberType } from '../../libs/enums/member.enum';
@@ -67,6 +68,12 @@ export class CarResolver {
 		return await this.carService.getCars(memberId, input);
 	}
 
+	@UseGuards(WithoutGuard)
+	@Query(() => [carBrand])
+	public async getCarBrands(): Promise<carBrand[]> {
+		return await this.carService.getCarBrands();
+	}
+
 	@UseGuards(AuthGuard)
 	@Mutation(() => Car)
 	public async likeTargetCar(
@@ -100,12 +107,12 @@ export class CarResolver {
 
 	@UseGuards(WithoutGuard)
 	@Query((returns) => Cars)
-	public async getAgentCars(
-		@Args('input') input: AgentCarsInquiry,
+	public async getDealerCars(
+		@Args('input') input: DealerCarsInquiry,
 		@AuthMember('_id') memberId: ObjectId,
 	): Promise<Cars> {
-		console.log('Query: getAgentCars');
-		return await this.carService.getAgentCars(memberId, input);
+		console.log('Query: getDealerCars');
+		return await this.carService.getDealerCars(memberId, input);
 	}
 
 	/** ADMIN **/

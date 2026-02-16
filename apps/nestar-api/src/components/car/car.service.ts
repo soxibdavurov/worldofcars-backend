@@ -5,7 +5,7 @@ import { Cars, Car } from '../../libs/dto/car/car';
 import {
 	CarsInquiry,
 	CarInput,
-	AgentCarsInquiry,
+	DealerCarsInquiry,
 } from '../../libs/dto/car/car.input';
 import { Direction, Message } from '../../libs/enums/common.enum';
 import { MemberService } from '../member/member.service';
@@ -20,15 +20,36 @@ import { LikeInput } from '../../libs/dto/like/like.input';
 import { LikeGroup } from '../../libs/enums/like.enum';
 import { LikeService } from '../like/like.service';
 import { OrdinaryInquiry } from '../../libs/dto/property/property.input';
+import { carBrand } from '../../libs/dto/car/carBrand';
 
 @Injectable()
 export class CarService {
 	constructor(
 		@InjectModel('Car') private readonly carModel: Model<Car>,
+		@InjectModel('CarBrand') private readonly carBrandModel: Model<carBrand>,
 		private memberService: MemberService,
 		private viewService: ViewService,
 		private likeService: LikeService,
 	) { }
+
+	private readonly defaultCarBrands = [
+		{ value: 'honda', label: 'Honda', categoryLogo: 'car/offer/honda.svg', categoryImage: 'car/category/1.png', sortOrder: 1 },
+		{ value: 'mercedes', label: 'Mercedes', categoryLogo: 'car/offer/mercedes.svg', categoryImage: 'car/category/2.png', sortOrder: 2 },
+		{ value: 'renault', label: 'Renault', categoryLogo: 'car/offer/renault.svg', categoryImage: 'car/category/3.png', sortOrder: 3 },
+		{ value: 'citroen', label: 'Citroen', categoryLogo: 'car/offer/citroen.svg', categoryImage: 'car/category/4.png', sortOrder: 4 },
+		{ value: 'audi', label: 'Audi', categoryLogo: 'car/offer/audi.svg', categoryImage: 'car/category/5.png', sortOrder: 5 },
+		{ value: 'bmw', label: 'BMW', categoryLogo: 'car/offer/bmw.svg', categoryImage: 'car/category/1.png', sortOrder: 6 },
+		{ value: 'lexus', label: 'Lexus', categoryLogo: 'car/offer/lexus.svg', categoryImage: 'car/category/2.png', sortOrder: 7 },
+	];
+
+	public async getCarBrands(): Promise<carBrand[]> {
+		let list = await this.carBrandModel.find({}).sort({ sortOrder: 1 }).lean().exec();
+		if (!list || list.length === 0) {
+			await this.carBrandModel.insertMany(this.defaultCarBrands);
+			list = await this.carBrandModel.find({}).sort({ sortOrder: 1 }).lean().exec();
+		}
+		return list as carBrand[];
+	}
 
 	public async createCar(input: CarInput): Promise<Car> {
 		try {
@@ -156,7 +177,7 @@ export class CarService {
 		return await this.viewService.getVisitedCars(memberId, input);
 	}
 
-	public async getAgentCars(memberId: ObjectId, input: AgentCarsInquiry): Promise<Cars> {
+	public async getDealerCars(memberId: ObjectId, input: DealerCarsInquiry): Promise<Cars> {
 		const match: T = { carStatus: CarStatus.ACTIVE };
 		const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };
 
@@ -165,7 +186,7 @@ export class CarService {
 			match.memberId = shapeIntoMongoObjectId(input.search.memberId);
 		}
 
-		console.log('getAgentCars match:', match);
+		console.log('getDealerCars match:', match);
 
 		const result = await this.carModel
 			.aggregate([
@@ -206,7 +227,10 @@ export class CarService {
 		if (memberId) match.memberId = shapeIntoMongoObjectId(memberId);
 		if (locationList && locationList.length) match.carLocation = { $in: locationList };
 		if (typeList && typeList.length) match.carType = { $in: typeList };
-		if (brandList && brandList.length) match.carBrand = { $in: brandList };
+		if (brandList && brandList.length) {
+			const escaped = brandList.map((b) => String(b).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+			match.carBrand = { $regex: new RegExp(`^(${escaped})$`, 'i') };
+		}
 		if (fuelTypeList && fuelTypeList.length) match.carFuelType = { $in: fuelTypeList };
 
 		if (pricesRange) match.carPrice = { $gte: pricesRange.start, $lte: pricesRange.end };
