@@ -3,26 +3,26 @@
 # ------------------------------------------------------
 
 type MeLiked {
-  memberId: String!
-  likeRefId: String!
-  myFavorite: Boolean!
+	memberId: String!
+	likeRefId: String!
+	myFavorite: Boolean!
 }
 
 type MeFollowed {
-  followingId: String!
-  followerId: String!
-  myFollowing: Boolean!
+	followingId: String!
+	followerId: String!
+	myFollowing: Boolean!
 }
 
 type Follower {
-  _id: String!
-  followingId: String!
-  followerId: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  meLiked: [MeLiked!]
-  meFollowed: [MeFollowed!]
-  followerData: Member
+	_id: String!
+	followingId: String!
+	followerId: String!
+	createdAt: DateTime!
+	updatedAt: DateTime!
+	meLiked: [MeLiked!]
+	meFollowed: [MeFollowed!]
+	followerData: Member
 }
 
 """
@@ -31,654 +31,656 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Following {
-  _id: String!
-  followingId: String!
-  followerId: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  meLiked: [MeLiked!]
-  meFollowed: [MeFollowed!]
-  followingData: Member
+	_id: String!
+	followingId: String!
+	followerId: String!
+	createdAt: DateTime!
+	updatedAt: DateTime!
+	meLiked: [MeLiked!]
+	meFollowed: [MeFollowed!]
+	followingData: Member
 }
 
 type Followings {
-  list: [Following!]!
-  metaCounter: [TotalCounter!]
+	list: [Following!]!
+	metaCounter: [TotalCounter!]
 }
 
 type Followers {
-  list: [Follower!]!
-  metaCounter: [TotalCounter!]
+	list: [Follower!]!
+	metaCounter: [TotalCounter!]
 }
 
 type Member {
-  _id: String!
-  memberType: MemberType!
-  memberStatus: MemberStatus!
-  memberAuthType: MemberAuthType!
-  memberPhone: String!
-  memberNick: String!
-  memberFullName: String
-  memberImage: String!
-  memberAddress: String
-  memberDesc: String
-  memberProperties: Int!
-  memberArticles: Int!
-  memberFollowers: Int!
-  memberFollowings: Int!
-  memberPoints: Int!
-  memberLikes: Int!
-  memberViews: Int!
-  memberComments: Int!
-  memberRank: Int!
-  memberWarnings: Int!
-  memberBlocks: Int!
-  deletedAt: DateTime
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  accessToken: String
-  meLiked: [MeLiked!]
-  meFollowed: [MeFollowed!]
+	_id: String!
+	memberType: MemberType!
+	memberStatus: MemberStatus!
+	memberAuthType: MemberAuthType!
+	memberPhone: String!
+	memberNick: String!
+	memberFullName: String
+	memberImage: String!
+	memberAddress: String
+	memberDesc: String
+	memberProperties: Int!
+	memberArticles: Int!
+	memberFollowers: Int!
+	memberFollowings: Int!
+	memberPoints: Int!
+	memberLikes: Int!
+	memberViews: Int!
+	memberComments: Int!
+	memberRank: Int!
+	memberWarnings: Int!
+	memberBlocks: Int!
+	deletedAt: DateTime
+	createdAt: DateTime!
+	updatedAt: DateTime!
+	accessToken: String
+	meLiked: [MeLiked!]
+	meFollowed: [MeFollowed!]
 }
 
 enum MemberType {
-  USER
-  DEALER
-  ADMIN
+	USER
+	DEALER
+	ADMIN
 }
 
 enum MemberStatus {
-  ACTIVE
-  BLOCK
-  DELETE
+	ACTIVE
+	BLOCK
+	DELETE
 }
 
 enum MemberAuthType {
-  PHONE
-  EMAIL
-  TELEGRAM
+	PHONE
+	EMAIL
+	TELEGRAM
 }
 
 type TotalCounter {
-  total: Int
+	total: Int
 }
 
 type Members {
-  list: [Member!]!
-  metaCounter: [TotalCounter!]
+	list: [Member!]!
+	metaCounter: [TotalCounter!]
 }
 
 type Property {
-  _id: String!
-  propertyType: PropertyType!
-  propertyStatus: PropertyStatus!
-  propertyLocation: PropertyLocation!
-  propertyAddress: String!
-  propertyTitle: String!
-  propertyPrice: Float!
-  propertySquare: Float!
-  propertyBeds: Int!
-  propertyRooms: Int!
-  propertyViews: Int!
-  propertyLikes: Int!
-  propertyComments: Int!
-  propertyRank: Int!
-  propertyImages: [String!]!
-  propertyDesc: String
-  propertyBarter: Boolean!
-  propertyRent: Boolean!
-  memberId: String!
-  soldAt: DateTime
-  deletedAt: DateTime
-  constructedAt: DateTime
-  createdAt: DateTime
-  updatedAt: DateTime
-  memberData: Member
-  meLiked: [MeLiked!]
+	_id: String!
+	propertyType: PropertyType!
+	propertyStatus: PropertyStatus!
+	propertyLocation: PropertyLocation!
+	propertyAddress: String!
+	propertyTitle: String!
+	propertyPrice: Float!
+	propertySquare: Float!
+	propertyBeds: Int!
+	propertyRooms: Int!
+	propertyViews: Int!
+	propertyLikes: Int!
+	propertyComments: Int!
+	propertyRank: Int!
+	propertyImages: [String!]!
+	propertyDesc: String
+	propertyBarter: Boolean!
+	propertyRent: Boolean!
+	memberId: String!
+	soldAt: DateTime
+	deletedAt: DateTime
+	constructedAt: DateTime
+	createdAt: DateTime
+	updatedAt: DateTime
+	memberData: Member
+	meLiked: [MeLiked!]
 }
 
 enum PropertyType {
-  APARTMENT
-  VILLA
-  HOUSE
+	APARTMENT
+	VILLA
+	HOUSE
 }
 
 enum PropertyStatus {
-  ACTIVE
-  SOLD
-  DELETE
+	ACTIVE
+	SOLD
+	DELETE
 }
 
 enum PropertyLocation {
-  SEOUL
-  BUSAN
-  INCHEON
-  DAEGU
-  GYEONGJU
-  GWANGJU
-  CHONJU
-  DAEJON
-  JEJU
-  SUWON
+	SEOUL
+	BUSAN
+	INCHEON
+	DAEGU
+	GYEONGJU
+	GWANGJU
+	CHONJU
+	DAEJON
+	JEJU
+	SUWON
 }
 
 type Properties {
-  list: [Property!]!
-  metaCounter: [TotalCounter!]
+	list: [Property!]!
+	metaCounter: [TotalCounter!]
 }
 
 type Comment {
-  _id: String!
-  commentStatus: CommentStatus!
-  commentGroup: CommentGroup!
-  commentContent: String!
-  commentRefId: String!
-  memberId: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  memberData: Member
+	_id: String!
+	commentStatus: CommentStatus!
+	commentGroup: CommentGroup!
+	commentContent: String!
+	commentRefId: String!
+	memberId: String!
+	createdAt: DateTime!
+	updatedAt: DateTime!
+	memberData: Member
 }
 
 enum CommentStatus {
-  ACTIVE
-  DELETE
+	ACTIVE
+	DELETE
 }
 
 enum CommentGroup {
-  MEMBER
-  ARTICLE
-  PROPERTY
+	MEMBER
+	ARTICLE
+	CAR
 }
 
 type Comments {
-  list: [Comment!]!
-  metaCounter: [TotalCounter!]
+	list: [Comment!]!
+	metaCounter: [TotalCounter!]
 }
 
 type BoardArticle {
-  _id: String!
-  articleCategory: BoardArticleCategory!
-  articleStatus: BoardArticleStatus!
-  articleTitle: String!
-  articleContent: String!
-  articleImage: String
-  articleViews: Int!
-  articleLikes: Int!
-  articleComments: Int!
-  memberId: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  memberData: Member
-  meLiked: [MeLiked!]
+	_id: String!
+	articleCategory: BoardArticleCategory!
+	articleStatus: BoardArticleStatus!
+	articleTitle: String!
+	articleContent: String!
+	articleImage: String
+	articleViews: Int!
+	articleLikes: Int!
+	articleComments: Int!
+	memberId: String!
+	createdAt: DateTime!
+	updatedAt: DateTime!
+	memberData: Member
+	meLiked: [MeLiked!]
 }
 
 enum BoardArticleCategory {
-  FREE
-  RECOMMEND
-  NEWS
-  HUMOR
+	FREE
+	RECOMMEND
+	NEWS
+	HUMOR
 }
 
 enum BoardArticleStatus {
-  ACTIVE
-  DELETE
+	ACTIVE
+	DELETE
 }
 
 type BoardArticles {
-  list: [BoardArticle!]!
-  metaCounter: [TotalCounter!]
+	list: [BoardArticle!]!
+	metaCounter: [TotalCounter!]
 }
 
 type Car {
-  _id: String!
-  carType: CarType!
-  carStatus: CarStatus!
-  carLocation: CarLocation!
-  carAddress: String!
-  carTitle: String!
-  carPrice: Float!
-  carBrand: String!
-  carModel: String!
-  carYear: Int!
-  carMileage: Float!
-  carFuelType: CarFuelType!
-  carEngineSize: String!
-  carTransmission: String!
-  carColor: String!
-  carViews: Int!
-  carLikes: Int!
-  carComments: Int!
-  carRank: Int!
-  carImages: [String!]!
-  carDesc: String
-  memberId: String!
-  soldAt: DateTime
-  deletedAt: DateTime
-  createdAt: DateTime
-  updatedAt: DateTime
-  memberData: Member
-  meLiked: [MeLiked!]
+	_id: String!
+	carType: CarType!
+	carStatus: CarStatus!
+	carLocation: CarLocation!
+	carAddress: String!
+	carTitle: String!
+	carPrice: Float!
+	carBrand: String!
+	carModel: String!
+	carYear: Int!
+	carMileage: Float!
+	carFuelType: CarFuelType!
+	carEngineSize: String!
+	carTransmission: String!
+	carColor: String!
+	carViews: Int!
+	carLikes: Int!
+	carComments: Int!
+	carRank: Int!
+	carImages: [String!]!
+	carDesc: String
+	memberId: String!
+	soldAt: DateTime
+	deletedAt: DateTime
+	createdAt: DateTime
+	updatedAt: DateTime
+	memberData: Member
+	meLiked: [MeLiked!]
 }
 
 enum CarType {
-  LIGHT
-  COMPACT
-  MIDSIZE
-  LARGE
-  SUV
-  TRUCK
-  OTHER
+	LIGHT
+	COMPACT
+	MIDSIZE
+	LARGE
+	SUV
+	TRUCK
+	OTHER
 }
 
 enum CarStatus {
-  ACTIVE
-  SOLD
-  DELETE
+	ACTIVE
+	SOLD
+	DELETE
 }
 
 enum CarLocation {
-  SEOUL
-  BUSAN
-  INCHEON
-  DAEGU
-  GYEONGJU
-  GWANGJU
-  CHONJU
-  DAEJON
-  JEJU
+	SEOUL
+	BUSAN
+	INCHEON
+	DAEGU
+	GYEONGJU
+	GWANGJU
+	CHONJU
+	DAEJON
+	JEJU
 }
 
 enum CarFuelType {
-  GASOLINE
-  DIESEL
-  LPG
-  HYBRID
-  ELECTRIC
-  HYDROGEN
-  OTHER
+	GASOLINE
+	DIESEL
+	LPG
+	HYBRID
+	ELECTRIC
+	HYDROGEN
+	OTHER
 }
 
 type Cars {
-  list: [Car!]!
-  metaCounter: [TotalCounter!]
+	list: [Car!]!
+	metaCounter: [TotalCounter!]
 }
 
 type Query {
-  sayHello: String!
-  checkAuth: String!
-  checkAuthRoles: String!
-  getMember(memberId: String!): Member!
-  getDealers(input: DealersInquiry!): Members!
-  getAllMembersByAdmin(input: MembersInquiry!): Members!
-  getProperty(propertyId: String!): Property!
-  getProperties(input: PropertiesInquiry!): Properties!
-  getFavorites(input: OrdinaryInquiry!): Properties!
-  getVisited(input: OrdinaryInquiry!): Properties!
-  getDealerProperties(input: DealerPropertiesInquiry!): Properties!
-  getAllPropertiesByAdmin(input: AllPropertiesInquiry!): Properties!
-  getCar(carId: String!): Car!
-  getCars(input: CarsInquiry!): Cars!
-  getDealerCars(input: DealerCarsInquiry!): Cars!
-  getBoardArticle(articleId: String!): BoardArticle!
-  getBoardArticles(input: BoardArticlesInquiry!): BoardArticles!
-  getAllBoardArticlesByAdmin(input: AllBoardArticlesInquiry!): BoardArticles!
-  getComments(input: CommentsInquiry!): Comments!
-  getMemberFollowings(input: FollowInquiry!): Followings!
-  getMemberFollowers(input: FollowInquiry!): Followers!
+	sayHello: String!
+	checkAuth: String!
+	checkAuthRoles: String!
+	getMember(memberId: String!): Member!
+	getDealers(input: DealersInquiry!): Members!
+	getAllMembersByAdmin(input: MembersInquiry!): Members!
+	getProperty(propertyId: String!): Property!
+	getProperties(input: PropertiesInquiry!): Properties!
+	getFavorites(input: OrdinaryInquiry!): Properties!
+	getVisited(input: OrdinaryInquiry!): Properties!
+	getDealerProperties(input: DealerPropertiesInquiry!): Properties!
+	getAllPropertiesByAdmin(input: AllPropertiesInquiry!): Properties!
+	getCar(carId: String!): Car!
+	getCars(input: CarsInquiry!): Cars!
+	getDealerCars(input: DealerCarsInquiry!): Cars!
+	getBoardArticle(articleId: String!): BoardArticle!
+	getBoardArticles(input: BoardArticlesInquiry!): BoardArticles!
+	getAllBoardArticlesByAdmin(input: AllBoardArticlesInquiry!): BoardArticles!
+	getComments(input: CommentsInquiry!): Comments!
+	getMemberFollowings(input: FollowInquiry!): Followings!
+	getMemberFollowers(input: FollowInquiry!): Followers!
 }
 
 input DealersInquiry {
-  page: Int!
-  limit: Int!
-  sort: String
-  direction: Direction
-  search: AISearch!
+	page: Int!
+	limit: Int!
+	sort: String
+	direction: Direction
+	search: AISearch!
 }
 
 enum Direction {
-  ASC
-  DESC
+	ASC
+	DESC
 }
 
 input AISearch {
-  text: String
+	text: String
 }
 
 input MembersInquiry {
-  page: Int!
-  limit: Int!
-  sort: String
-  direction: Direction
-  search: MISearch!
+	page: Int!
+	limit: Int!
+	sort: String
+	direction: Direction
+	search: MISearch!
 }
 
 input MISearch {
-  memberStatus: MemberStatus
-  memberType: MemberType
-  text: String
+	memberStatus: MemberStatus
+	memberType: MemberType
+	text: String
 }
 
 input PropertiesInquiry {
-  page: Int!
-  limit: Int!
-  sort: String
-  direction: Direction
-  search: PISearch!
+	page: Int!
+	limit: Int!
+	sort: String
+	direction: Direction
+	search: PISearch!
 }
 
 input PISearch {
-  memberId: String
-  locationList: [PropertyLocation!]
-  typeList: [PropertyType!]
-  roomsList: [Int!]
-  bedsList: [Int!]
-  options: [String!]
-  pricesRange: PricesRange
-  periodsRange: PeriodsRange
-  squaresRange: SquaresRange
-  text: String
+	memberId: String
+	locationList: [PropertyLocation!]
+	typeList: [PropertyType!]
+	roomsList: [Int!]
+	bedsList: [Int!]
+	options: [String!]
+	pricesRange: PricesRange
+	periodsRange: PeriodsRange
+	squaresRange: SquaresRange
+	text: String
 }
 
 input PricesRange {
-  start: Int!
-  end: Int!
+	start: Int!
+	end: Int!
 }
 
 input PeriodsRange {
-  start: DateTime!
-  end: DateTime!
+	start: DateTime!
+	end: DateTime!
 }
 
 input SquaresRange {
-  start: Int!
-  end: Int!
+	start: Int!
+	end: Int!
 }
 
 input OrdinaryInquiry {
-  page: Int!
-  limit: Int!
+	page: Int!
+	limit: Int!
 }
 
 input DealerPropertiesInquiry {
-  page: Int!
-  limit: Int!
-  sort: String
-  direction: Direction
-  search: APISearch!
+	page: Int!
+	limit: Int!
+	sort: String
+	direction: Direction
+	search: APISearch!
 }
 
 input APISearch {
-  propertyStatus: PropertyStatus
+	propertyStatus: PropertyStatus
 }
 
 input AllPropertiesInquiry {
-  page: Int!
-  limit: Int!
-  sort: String
-  direction: Direction
-  search: ALPISearch!
+	page: Int!
+	limit: Int!
+	sort: String
+	direction: Direction
+	search: ALPISearch!
 }
 
 input ALPISearch {
-  propertyStatus: PropertyStatus
-  propertyLocationList: [PropertyLocation!]
+	propertyStatus: PropertyStatus
+	propertyLocationList: [PropertyLocation!]
 }
 
 input CarsInquiry {
-  page: Int!
-  limit: Int!
-  sort: String
-  direction: Direction
-  search: CarInquirySearch!
+	page: Int!
+	limit: Int!
+	sort: String
+	direction: Direction
+	search: CarInquirySearch!
 }
 
 input CarInquirySearch {
-  memberId: String
-  locationList: [CarLocation!]
-  typeList: [CarType!]
-  brandList: [String!]
-  fuelTypeList: [CarFuelType!]
-  pricesRange: CarPricesRange
-  yearsRange: CarYearsRange
-  mileageRange: CarMileageRange
-  periodsRange: CarPeriodsRange
-  text: String
+	memberId: String
+	locationList: [CarLocation!]
+	typeList: [CarType!]
+	brandList: [String!]
+	fuelTypeList: [CarFuelType!]
+	pricesRange: CarPricesRange
+	yearsRange: CarYearsRange
+	mileageRange: CarMileageRange
+	periodsRange: CarPeriodsRange
+	text: String
 }
 
 input CarPricesRange {
-  start: Int!
-  end: Int!
+	start: Int!
+	end: Int!
 }
 
 input CarYearsRange {
-  start: Int!
-  end: Int!
+	start: Int!
+	end: Int!
 }
 
 input CarMileageRange {
-  start: Int!
-  end: Int!
+	start: Int!
+	end: Int!
 }
 
 input CarPeriodsRange {
-  start: DateTime!
-  end: DateTime!
+	start: DateTime!
+	end: DateTime!
 }
 
 input DealerCarsInquiry {
-  page: Int!
-  limit: Int!
-  sort: String
-  direction: Direction
-  search: DealerCarsInquirySearch
+	page: Int!
+	limit: Int!
+	sort: String
+	direction: Direction
+	search: DealerCarsInquirySearch
 }
 
 input DealerCarsInquirySearch {
-  memberId: String
+	memberId: String
 }
 
 input BoardArticlesInquiry {
-  page: Int!
-  limit: Int!
-  sort: String
-  direction: Direction
-  search: BAISearch!
+	page: Int!
+	limit: Int!
+	sort: String
+	direction: Direction
+	search: BAISearch!
 }
 
 input BAISearch {
-  articleCategory: BoardArticleCategory
-  text: String
-  memberId: String
+	articleCategory: BoardArticleCategory
+	text: String
+	memberId: String
 }
 
 input AllBoardArticlesInquiry {
-  page: Int!
-  limit: Int!
-  sort: String
-  direction: Direction
-  search: ABAISearch!
+	page: Int!
+	limit: Int!
+	sort: String
+	direction: Direction
+	search: ABAISearch!
 }
 
 input ABAISearch {
-  articleStatus: BoardArticleStatus
-  articleCategory: BoardArticleCategory
+	articleStatus: BoardArticleStatus
+	articleCategory: BoardArticleCategory
 }
 
 input CommentsInquiry {
-  page: Int!
-  limit: Int!
-  sort: String
-  direction: Direction
-  search: CISearch!
+	page: Int!
+	limit: Int!
+	sort: String
+	direction: Direction
+	search: CISearch!
 }
 
 input CISearch {
-  commentRefId: String!
+	commentRefId: String!
 }
 
 input FollowInquiry {
-  page: Int!
-  limit: Int!
-  search: FollowSearch!
+	page: Int!
+	limit: Int!
+	search: FollowSearch!
 }
 
 input FollowSearch {
-  followingId: String
-  followerId: String
+	followingId: String
+	followerId: String
 }
 
 type Mutation {
-  signup(input: MemberInput!): Member!
-  login(input: LoginInput!): Member!
-  updateMember(input: MemberUpdate!): Member!
-  likeTargetMember(memberId: String!): Member!
-  updateMemberByAdmin(input: MemberUpdate!): Member!
-  imageUploader(file: Upload!, target: String!): String!
-  imagesUploader(files: [Upload!]!, target: String!): [String!]!
-  createProperty(input: PropertyInput!): Property!
-  updateProperty(input: PropertyUpdate!): Property!
-  likeTargetProperty(propertyId: String!): Property!
-  updatePropertyByAdmin(input: PropertyUpdate!): Property!
-  removePropertyByAdmin(propertyId: String!): Property!
-  createCar(input: CarInput!): Car!
-  updateCar(input: CarUpdate!): Car!
-  likeTargetCar(carId: String!): Car!
-  createBoardArticle(input: BoardArticleInput!): BoardArticle!
-  updateBoardArticle(input: BoardArticleUpdate!): BoardArticle!
-  likeTargetBoardArticle(articleId: String!): BoardArticle!
-  updateBoardArticleByAdmin(input: BoardArticleUpdate!): BoardArticle!
-  removeBoardArticleByAdmin(articleId: String!): BoardArticle!
-  createComment(input: CommentInput!): Comment!
-  updateComment(input: CommentUpdate!): Comment!
-  removeCommentByAdmin(commentId: String!): Comment!
-  subscribe(input: String!): Follower!
-  unsubscribe(input: String!): Follower!
+	signup(input: MemberInput!): Member!
+	login(input: LoginInput!): Member!
+	updateMember(input: MemberUpdate!): Member!
+	likeTargetMember(memberId: String!): Member!
+	updateMemberByAdmin(input: MemberUpdate!): Member!
+	imageUploader(file: Upload!, target: String!): String!
+	imagesUploader(files: [Upload!]!, target: String!): [String!]!
+	createProperty(input: PropertyInput!): Property!
+	updateProperty(input: PropertyUpdate!): Property!
+	likeTargetProperty(propertyId: String!): Property!
+	updatePropertyByAdmin(input: PropertyUpdate!): Property!
+	removePropertyByAdmin(propertyId: String!): Property!
+	createCar(input: CarInput!): Car!
+	updateCar(input: CarUpdate!): Car!
+	likeTargetCar(carId: String!): Car!
+	createBoardArticle(input: BoardArticleInput!): BoardArticle!
+	updateBoardArticle(input: BoardArticleUpdate!): BoardArticle!
+	likeTargetBoardArticle(articleId: String!): BoardArticle!
+	updateBoardArticleByAdmin(input: BoardArticleUpdate!): BoardArticle!
+	removeBoardArticleByAdmin(articleId: String!): BoardArticle!
+	createComment(input: CommentInput!): Comment!
+	updateComment(input: CommentUpdate!): Comment!
+	removeCommentByAdmin(commentId: String!): Comment!
+	subscribe(input: String!): Follower!
+	unsubscribe(input: String!): Follower!
 }
 
 input MemberInput {
-  memberNick: String!
-  memberPassword: String!
-  memberPhone: String!
-  memberType: MemberType
-  memberAuthType: MemberAuthType
+	memberNick: String!
+	memberPassword: String!
+	memberPhone: String!
+	memberType: MemberType
+	memberAuthType: MemberAuthType
 }
 
 input LoginInput {
-  memberNick: String!
-  memberPassword: String!
+	memberNick: String!
+	memberPassword: String!
 }
 
 input MemberUpdate {
-  _id: String!
-  memberType: MemberType
-  memberStatus: MemberStatus
-  memberPhone: String
-  memberNick: String
-  memberPassword: String
-  memberFullName: String
-  memberImage: String
-  memberAddress: String
-  memberDesc: String
+	_id: String!
+	memberType: MemberType
+	memberStatus: MemberStatus
+	memberPhone: String
+	memberNick: String
+	memberPassword: String
+	memberFullName: String
+	memberImage: String
+	memberAddress: String
+	memberDesc: String
 }
 
-"""The `Upload` scalar type represents a file upload."""
+"""
+The `Upload` scalar type represents a file upload.
+"""
 scalar Upload
 
 input PropertyInput {
-  propertyType: PropertyType!
-  propertyLocation: PropertyLocation!
-  propertyAddress: String!
-  propertyTitle: String!
-  propertyPrice: Float!
-  propertySquare: Float!
-  propertyBeds: Int!
-  propertyRooms: Int!
-  propertyImages: [String!]!
-  propertyDesc: String
-  propertyBarter: Boolean
-  propertyRent: Boolean
-  constructedAt: DateTime
+	propertyType: PropertyType!
+	propertyLocation: PropertyLocation!
+	propertyAddress: String!
+	propertyTitle: String!
+	propertyPrice: Float!
+	propertySquare: Float!
+	propertyBeds: Int!
+	propertyRooms: Int!
+	propertyImages: [String!]!
+	propertyDesc: String
+	propertyBarter: Boolean
+	propertyRent: Boolean
+	constructedAt: DateTime
 }
 
 input PropertyUpdate {
-  _id: String!
-  propertyType: PropertyType
-  propertyStatus: PropertyStatus
-  propertyLocation: PropertyLocation
-  propertyAddress: String
-  propertyTitle: String
-  propertyPrice: Float
-  propertySquare: Float
-  propertyBeds: Int
-  propertyRooms: Int
-  propertyImages: [String!]
-  propertyDesc: String
-  propertyBarter: Boolean
-  propertyRent: Boolean
-  constructedAt: DateTime
+	_id: String!
+	propertyType: PropertyType
+	propertyStatus: PropertyStatus
+	propertyLocation: PropertyLocation
+	propertyAddress: String
+	propertyTitle: String
+	propertyPrice: Float
+	propertySquare: Float
+	propertyBeds: Int
+	propertyRooms: Int
+	propertyImages: [String!]
+	propertyDesc: String
+	propertyBarter: Boolean
+	propertyRent: Boolean
+	constructedAt: DateTime
 }
 
 input CarInput {
-  carType: CarType!
-  carLocation: CarLocation!
-  carAddress: String!
-  carTitle: String!
-  carPrice: Float!
-  carBrand: String!
-  carModel: String!
-  carYear: Int!
-  carMileage: Float!
-  carFuelType: CarFuelType!
-  carEngineSize: String!
-  carTransmission: String!
-  carColor: String!
-  carImages: [String!]!
-  carDesc: String
+	carType: CarType!
+	carLocation: CarLocation!
+	carAddress: String!
+	carTitle: String!
+	carPrice: Float!
+	carBrand: String!
+	carModel: String!
+	carYear: Int!
+	carMileage: Float!
+	carFuelType: CarFuelType!
+	carEngineSize: String!
+	carTransmission: String!
+	carColor: String!
+	carImages: [String!]!
+	carDesc: String
 }
 
 input CarUpdate {
-  _id: String!
-  carType: CarType
-  carLocation: CarLocation
-  carAddress: String
-  carTitle: String
-  carPrice: Float
-  carBrand: String
-  carModel: String
-  carYear: Int
-  carMileage: Float
-  carFuelType: CarFuelType
-  carEngineSize: String
-  carTransmission: String
-  carColor: String
-  carImages: [String!]
-  carDesc: String
-  carStatus: CarStatus
+	_id: String!
+	carType: CarType
+	carLocation: CarLocation
+	carAddress: String
+	carTitle: String
+	carPrice: Float
+	carBrand: String
+	carModel: String
+	carYear: Int
+	carMileage: Float
+	carFuelType: CarFuelType
+	carEngineSize: String
+	carTransmission: String
+	carColor: String
+	carImages: [String!]
+	carDesc: String
+	carStatus: CarStatus
 }
 
 input BoardArticleInput {
-  articleCategory: BoardArticleCategory!
-  articleTitle: String!
-  articleContent: String!
-  articleImage: String
+	articleCategory: BoardArticleCategory!
+	articleTitle: String!
+	articleContent: String!
+	articleImage: String
 }
 
 input BoardArticleUpdate {
-  _id: String!
-  articleStatus: BoardArticleStatus
-  articleTitle: String
-  articleContent: String
-  articleImage: String
+	_id: String!
+	articleStatus: BoardArticleStatus
+	articleTitle: String
+	articleContent: String
+	articleImage: String
 }
 
 input CommentInput {
-  commentGroup: CommentGroup!
-  commentContent: String!
-  commentRefId: String!
+	commentGroup: CommentGroup!
+	commentContent: String!
+	commentRefId: String!
 }
 
 input CommentUpdate {
-  _id: String!
-  commentStatus: CommentStatus
-  commentContent: String
+	_id: String!
+	commentStatus: CommentStatus
+	commentContent: String
 }

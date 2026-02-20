@@ -23,6 +23,9 @@ export class Comment {
 	@Field(() => String)
 	memberId: ObjectId;
 
+	@Field(() => String, { nullable: true })
+	parentCommentId?: ObjectId;
+
 	@Field(() => Date)
 	createdAt: Date;
 
@@ -33,6 +36,9 @@ export class Comment {
 
 	@Field(() => Member, { nullable: true })
 	memberData?: Member;
+
+	@Field(() => [Comment], { nullable: true })
+	replies?: Comment[];
 }
 
 @ObjectType()

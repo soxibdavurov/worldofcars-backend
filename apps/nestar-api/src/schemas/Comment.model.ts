@@ -29,6 +29,12 @@ const CommentSchema = new Schema(
 			type: Schema.Types.ObjectId,
 			required: true,
 		},
+
+		parentCommentId: {
+			type: Schema.Types.ObjectId,
+			required: false,
+			default: null,
+		},
 	},
 	{ timestamps: true, collection: 'comments' },
 );

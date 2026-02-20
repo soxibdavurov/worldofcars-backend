@@ -33,10 +33,10 @@ export class CommentService {
 		}
 
 		switch (input.commentGroup) {
-			case CommentGroup.PROPERTY:
+			case CommentGroup.CAR:
 				await this.propertyService.propertyStatsEditor({
 					_id: input.commentRefId,
-					targetKey: 'propertyComments',
+					targetKey: 'carComments',
 					modifier: 1,
 				});
 				break;
@@ -81,7 +81,7 @@ export class CommentService {
 
 	public async getComments(memberId: ObjectId, input: CommentsInquiry): Promise<Comments> {
 		const { commentRefId } = input.search;
-		const match: T = { commentRefId: commentRefId, commentStatus: CommentStatus.ACTIVE };
+		const match: T = { commentRefId: commentRefId, commentStatus: CommentStatus.ACTIVE, parentCommentId: null };
 		const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };
 
 		const result: Comments[] = await this.commentModule
@@ -96,6 +96,29 @@ export class CommentService {
 							// meliked
 							lookupMember,
 							{ $unwind: '$memberData' },
+							// Get replies for each comment
+							{
+								$lookup: {
+									from: 'comments',
+									let: { parentId: '$_id' },
+									pipeline: [
+										{
+											$match: {
+												$expr: {
+													$and: [
+														{ $eq: ['$parentCommentId', '$$parentId'] },
+														{ $eq: ['$commentStatus', CommentStatus.ACTIVE] },
+													],
+												},
+											},
+										},
+										{ $sort: { createdAt: -1 } },
+										lookupMember,
+										{ $unwind: '$memberData' },
+									],
+									as: 'replies',
+								},
+							},
 						],
 						metaCounter: [{ $count: 'total' }],
 					},
