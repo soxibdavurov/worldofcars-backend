@@ -115,12 +115,18 @@ export class MemberService {
 	}
 
 	public async getDealers(memberId: ObjectId, input: DealersInquiry): Promise<Members> {
-		const { text } = input.search;
+		const rawText = input.search?.text;
+		const text = typeof rawText === 'string' ? rawText.trim() : undefined;
 		const match: T = { memberType: MemberType.DEALER, memberStatus: MemberStatus.ACTIVE };
 		const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };
 
-		if (text) match.memberNick = { $regex: new RegExp(text, 'i') };
-		console.log('match: ', match);
+		if (text) {
+			const regex = new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+			match.$or = [
+				{ memberNick: { $regex: regex } },
+				{ memberFullName: { $regex: regex } },
+			];
+		}
 
 		const result = await this.memberModel
 			.aggregate([
@@ -134,9 +140,16 @@ export class MemberService {
 				},
 			])
 			.exec();
-		if (!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 
-		return result[0];
+		const facet = result?.[0];
+		if (!facet) {
+			return { list: [], metaCounter: [{ total: 0 }] };
+		}
+		const list = facet.list ?? [];
+		const metaCounter = Array.isArray(facet.metaCounter) && facet.metaCounter.length > 0
+			? facet.metaCounter
+			: [{ total: 0 }];
+		return { list, metaCounter };
 	}
 
 	public async likeTargetMember(memberId: ObjectId, likeRefId: ObjectId): Promise<Member> {

@@ -201,7 +201,7 @@ type BoardArticle {
 	articleStatus: BoardArticleStatus!
 	articleTitle: String!
 	articleContent: String!
-	articleImage: String
+	articleImage: [String]
 	articleViews: Int!
 	articleLikes: Int!
 	articleComments: Int!
@@ -213,7 +213,7 @@ type BoardArticle {
 }
 
 enum BoardArticleCategory {
-	FREE
+	VEHICLES
 	RECOMMEND
 	NEWS
 	HUMOR

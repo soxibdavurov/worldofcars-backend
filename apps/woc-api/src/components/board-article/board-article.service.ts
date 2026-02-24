@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { BoardArticle, BoardArticles } from '../../libs/dto/board-article/board-article';
-import { Model, ObjectId } from 'mongoose';
+import { Model, ObjectId, Types } from 'mongoose';
 import {
 	AllBoardArticlesInquiry,
 	BoardArticleInput,
@@ -10,7 +10,7 @@ import {
 import { MemberService } from '../member/member.service';
 import { ViewService } from '../view/view.service';
 import { Direction, Message } from '../../libs/enums/common.enum';
-import { BoardArticleStatus } from '../../libs/enums/board-article.enum';
+import { BoardArticleCategory, BoardArticleStatus } from '../../libs/enums/board-article.enum';
 import { StatisticModifier, T } from '../../libs/types/common';
 import { ViewGroup } from '../../libs/enums/view.enum';
 import { lookupAuthMemberLiked, lookupMember, shapeIntoMongoObjectId } from '../../libs/config';
@@ -27,6 +27,25 @@ export class BoardArticleService {
 		private readonly viewService: ViewService,
 		private readonly likeService: LikeService,
 	) {}
+
+	private normalizeArticleCategory(
+		value?: string | null,
+		idToName?: Map<string, string>,
+	): BoardArticleCategory | null {
+		if (!value) return null;
+		const raw = String(value);
+		const upper = raw.toUpperCase();
+		if (Object.values(BoardArticleCategory).includes(upper as BoardArticleCategory)) {
+			return upper as BoardArticleCategory;
+		}
+		if (idToName && idToName.has(raw)) {
+			const mapped = String(idToName.get(raw)).toUpperCase();
+			if (Object.values(BoardArticleCategory).includes(mapped as BoardArticleCategory)) {
+				return mapped as BoardArticleCategory;
+			}
+		}
+		return null;
+	}
 
 	public async createBoardArticle(memberId: ObjectId, input: BoardArticleInput): Promise<BoardArticle> {
 		input.memberId = memberId; // <= Nega bu try ichida emas?
@@ -68,6 +87,19 @@ export class BoardArticleService {
 		}
 
 		targetBoardArticle.memberData = await this.memberService.getMember(null, targetBoardArticle.memberId);
+
+		// Normalize articleCategory if DB stores ObjectId or mixed casing
+		if (targetBoardArticle.articleCategory) {
+			const rawCategory = String(targetBoardArticle.articleCategory);
+			if (/^[a-f0-9]{24}$/i.test(rawCategory)) {
+				const cc = this.boardArticleModel.db.collection('communityCategories');
+				const categoryDoc = await cc.findOne({ _id: new Types.ObjectId(rawCategory) });
+				const idToName = new Map([[String(categoryDoc?._id), categoryDoc?.name ?? '']]);
+				targetBoardArticle.articleCategory = this.normalizeArticleCategory(rawCategory, idToName) as any;
+			} else {
+				targetBoardArticle.articleCategory = this.normalizeArticleCategory(rawCategory) as any;
+			}
+		}
 		return targetBoardArticle;
 	}
 
@@ -125,7 +157,26 @@ export class BoardArticleService {
 			])
 			.exec();
 
-		if (!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+		if (!result.length) return { list: [], metaCounter: [{ total: 0 }] };
+
+		const list = result[0].list ?? [];
+		const ids = list
+			.map((item: any) => item?.articleCategory)
+			.filter((val: any) => typeof val === 'string' && /^[a-f0-9]{24}$/i.test(val));
+		if (ids.length) {
+			const cc = this.boardArticleModel.db.collection('communityCategories');
+			const categoryDocs = await cc
+				.find({ _id: { $in: ids.map((id: string) => new Types.ObjectId(id)) } })
+				.toArray();
+			const idToName = new Map(categoryDocs.map((doc: any) => [String(doc._id), doc.name]));
+			for (const item of list) {
+				item.articleCategory = this.normalizeArticleCategory(item?.articleCategory, idToName) as any;
+			}
+		} else {
+			for (const item of list) {
+				item.articleCategory = this.normalizeArticleCategory(item?.articleCategory) as any;
+			}
+		}
 
 		return result[0];
 	}
@@ -157,7 +208,26 @@ export class BoardArticleService {
 			])
 			.exec();
 
-		if (!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+		if (!result.length) return { list: [], metaCounter: [{ total: 0 }] };
+
+		const list = result[0].list ?? [];
+		const ids = list
+			.map((item: any) => item?.articleCategory)
+			.filter((val: any) => typeof val === 'string' && /^[a-f0-9]{24}$/i.test(val));
+		if (ids.length) {
+			const cc = this.boardArticleModel.db.collection('communityCategories');
+			const categoryDocs = await cc
+				.find({ _id: { $in: ids.map((id: string) => new Types.ObjectId(id)) } })
+				.toArray();
+			const idToName = new Map(categoryDocs.map((doc: any) => [String(doc._id), doc.name]));
+			for (const item of list) {
+				item.articleCategory = this.normalizeArticleCategory(item?.articleCategory, idToName) as any;
+			}
+		} else {
+			for (const item of list) {
+				item.articleCategory = this.normalizeArticleCategory(item?.articleCategory) as any;
+			}
+		}
 
 		return result[0];
 	}

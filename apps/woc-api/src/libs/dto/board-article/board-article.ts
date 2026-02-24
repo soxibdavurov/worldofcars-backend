@@ -9,8 +9,8 @@ export class BoardArticle {
 	@Field(() => String)
 	_id: ObjectId;
 
-	@Field(() => BoardArticleCategory)
-	articleCategory: BoardArticleCategory;
+	@Field(() => BoardArticleCategory, { nullable: true })
+	articleCategory?: BoardArticleCategory;
 
 	@Field(() => BoardArticleStatus)
 	articleStatus: BoardArticleStatus;
@@ -21,7 +21,7 @@ export class BoardArticle {
 	@Field(() => String)
 	articleContent: string;
 
-	@Field(() => String, { nullable: true })
+	@Field(() => [String], { nullable: true })
 	articleImage?: string[];
 
 	@Field(() => Int)

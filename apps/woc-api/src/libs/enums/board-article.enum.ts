@@ -1,7 +1,7 @@
 import { registerEnumType } from '@nestjs/graphql';
 
 export enum BoardArticleCategory {
-	FREE = 'FREE',
+	VEHICLES = 'VEHICLES',
 	RECOMMEND = 'RECOMMEND',
 	NEWS = 'NEWS',
 	HUMOR = 'HUMOR',
