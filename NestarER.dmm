@@ -3793,7 +3793,7 @@
 	"model": {
 		"activeDiagram": "ab451cb1-a465-4819-9fe3-5246a407ccc3",
 		"desc": "",
-		"name": "nestar",
+		"name": "WorldOfCars",
 		"id": "b51f5b4e-4070-4064-b0ef-03066c349715",
 		"path": "",
 		"type": "MONGODB",

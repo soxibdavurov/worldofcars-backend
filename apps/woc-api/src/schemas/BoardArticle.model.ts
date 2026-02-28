@@ -29,6 +29,10 @@ const BoardArticleSchema = new Schema(
 			type: [String],
 			default: [],
 		},
+		status: {
+			type: String,
+			default: null,
+		},
 
 		articleLikes: {
 			type: Number,

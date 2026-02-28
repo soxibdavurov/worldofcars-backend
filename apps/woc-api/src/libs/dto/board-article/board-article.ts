@@ -30,6 +30,9 @@ export class BoardArticle {
 	@Field(() => Int)
 	articleLikes: number;
 
+	@Field(() => String, { nullable: true })
+	status?: string;
+
 	@Field(() => Int)
 	articleComments: number;
 
