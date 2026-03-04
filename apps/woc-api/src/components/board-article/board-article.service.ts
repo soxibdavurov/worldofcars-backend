@@ -75,13 +75,8 @@ export class BoardArticleService {
 		if (!targetBoardArticle) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 
 		if (memberId) {
-			const viewInput = { memberId: memberId, viewRefId: articleId, viewGroup: ViewGroup.ARTICLE }; // men , nimani ,qayerdan
-			const newView = await this.viewService.recordView(viewInput);
-			if (newView) {
-				await this.boardArticleStatsEditor({ _id: articleId, targetKey: 'articleViews', modifier: 1 });
-				targetBoardArticle.articleViews++;
-			}
-
+			const viewInput = { memberId: memberId, viewRefId: articleId, viewGroup: ViewGroup.ARTICLE };
+			await this.viewService.recordView(viewInput);
 			const likeInput = { memberId: memberId, likeRefId: articleId, likeGroup: LikeGroup.ARTICLE };
 			targetBoardArticle.meLiked = await this.likeService.checkLikeExistence(likeInput);
 		}
@@ -101,6 +96,14 @@ export class BoardArticleService {
 			}
 		}
 		return targetBoardArticle;
+	}
+
+	/** Sahifa ochilganda bir marta chaqiriladi — articleViews 1 ga oshadi (like/refetch da oshmaydi) */
+	public async recordArticleView(articleId: ObjectId): Promise<boolean> {
+		const target = await this.boardArticleModel.findById(articleId).select('_id').lean().exec();
+		if (!target) return false;
+		await this.boardArticleStatsEditor({ _id: articleId, targetKey: 'articleViews', modifier: 1 });
+		return true;
 	}
 
 	public async updateBoardArticle(memberId: ObjectId, input: BoardArticleUpdate): Promise<BoardArticle> {

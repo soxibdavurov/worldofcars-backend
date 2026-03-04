@@ -41,9 +41,15 @@ export class CarResolver {
 		@Args('carId') input: string,
 		@AuthMember('_id') memberId: ObjectId,
 	): Promise<Car> {
-		console.log('Query: getCar');
 		const carId = shapeIntoMongoObjectId(input);
 		return await this.carService.getCar(memberId, carId);
+	}
+
+	@UseGuards(WithoutGuard)
+	@Mutation(() => Boolean)
+	public async recordCarView(@Args('carId') input: string): Promise<boolean> {
+		const carId = shapeIntoMongoObjectId(input);
+		return await this.carService.recordCarView(carId);
 	}
 
 	@Roles(MemberType.ADMIN, MemberType.DEALER)

@@ -37,9 +37,15 @@ export class BoardArticleResolver {
 		@Args('articleId') input: string,
 		@AuthMember('_id') memberId: ObjectId,
 	): Promise<BoardArticle> {
-		console.log('Query: getProperty');
 		const articleId = shapeIntoMongoObjectId(input);
 		return await this.boardArticleService.getBoardArticle(memberId, articleId);
+	}
+
+	@UseGuards(WithoutGuard)
+	@Mutation(() => Boolean)
+	public async recordArticleView(@Args('articleId') input: string): Promise<boolean> {
+		const articleId = shapeIntoMongoObjectId(input);
+		return await this.boardArticleService.recordArticleView(articleId);
 	}
 
 	@UseGuards(AuthGuard)

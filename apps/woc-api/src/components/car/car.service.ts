@@ -77,18 +77,21 @@ export class CarService {
 
 		if (memberId) {
 			const viewInput = { memberId: memberId, viewRefId: carId, viewGroup: ViewGroup.CAR };
-			const newView = await this.viewService.recordView(viewInput);
-			if (newView) {
-				await this.carStatsEditor({ _id: carId, targetKey: 'carViews', modifier: 1 });
-				targetCar.carViews++;
-			}
-			// meLiked
+			await this.viewService.recordView(viewInput);
 			const likeInput = { memberId: memberId, likeRefId: carId, likeGroup: LikeGroup.CAR };
 			targetCar.meLiked = await this.likeService.checkLikeExistence(likeInput);
 		}
 
 		targetCar.memberData = await this.memberService.getMember(null, targetCar.memberId);
 		return targetCar;
+	}
+
+	/** Sahifa ochilganda bir marta chaqiriladi — carViews 1 ga oshadi (like/refetch da oshmaydi) */
+	public async recordCarView(carId: ObjectId): Promise<boolean> {
+		const target = await this.carModel.findById(carId).select('_id').lean().exec();
+		if (!target) return false;
+		await this.carStatsEditor({ _id: carId, targetKey: 'carViews', modifier: 1 });
+		return true;
 	}
 
 	public async updateCar(memberId: ObjectId, input: CarUpdate): Promise<Car> {
