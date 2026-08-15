@@ -35,7 +35,7 @@ export class MemberService {
 			result.accessToken = await this.authService.createToken(result);
 			return result;
 		} catch (err) {
-			console.log('Error, Service.model:', err.message);
+			console.log('Error, Service.model:', (err as Error).message);
 			throw new BadRequestException(Message.USED_MEMBER_NICK_OR_PHONE);
 		}
 	}
@@ -105,7 +105,28 @@ export class MemberService {
 			//meFollow
 			targetMember.meFollowed = await this.checkSubscription(memberId, targetId);
 		}
+
+		await this.syncFollowStats(targetId, targetMember);
 		return targetMember;
+	}
+
+	private async syncFollowStats(targetId: ObjectId, member: Member): Promise<void> {
+		const [followersCount, followingsCount] = await Promise.all([
+			this.followModel.countDocuments({ followingId: targetId }),
+			this.followModel.countDocuments({ followerId: targetId }),
+		]);
+
+		if (member.memberFollowers !== followersCount || member.memberFollowings !== followingsCount) {
+			await this.memberModel
+				.updateOne(
+					{ _id: targetId },
+					{ $set: { memberFollowers: followersCount, memberFollowings: followingsCount } },
+				)
+				.exec();
+		}
+
+		member.memberFollowers = followersCount;
+		member.memberFollowings = followingsCount;
 	}
 
 	public async checkSubscription(followerId: ObjectId, followingId: ObjectId): Promise<MeFollowed[]> {

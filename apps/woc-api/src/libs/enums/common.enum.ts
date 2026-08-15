@@ -17,6 +17,7 @@ export enum Message {
 	TOKEN_NOT_EXIST = 'Bearer Token is not provided!',
 	ONLY_SPECIFIC_ROLES_ALLOWED = 'Allowed only for members with SPECIFIC ROLES!',
 	NOT_AUTHENTICATED = 'You are not authenticated, please login first.',
+	NOT_AUTHENTICATED_ASK = "You are not authenticated, do you want to login?",
 	TOKEN_CREATION_FAILED = 'Token create failed!',
 	NOT_ALLOWED_REQUEST = 'Not allowed request',
 	ONLY_SPECIFIC_ROLES_ALLOWD = 'Allowed only for members with specific roles!',

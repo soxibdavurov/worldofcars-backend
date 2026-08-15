@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { BoardArticle, BoardArticles } from '../../libs/dto/board-article/board-article';
+import { BoardArticle, BoardArticleMeta, BoardArticles } from '../../libs/dto/board-article/board-article';
 import { Model, ObjectId, Types } from 'mongoose';
 import {
 	AllBoardArticlesInquiry,
@@ -13,7 +13,7 @@ import { Direction, Message } from '../../libs/enums/common.enum';
 import { BoardArticleCategory, BoardArticleStatus } from '../../libs/enums/board-article.enum';
 import { StatisticModifier, T } from '../../libs/types/common';
 import { ViewGroup } from '../../libs/enums/view.enum';
-import { lookupAuthMemberLiked, lookupMember, shapeIntoMongoObjectId } from '../../libs/config';
+import { lookupAuthMemberLiked, lookupMember, lookupMemberLite, shapeIntoMongoObjectId } from '../../libs/config';
 import { BoardArticleUpdate } from '../../libs/dto/board-article/board-article.update';
 import { LikeService } from '../like/like.service';
 import { LikeInput } from '../../libs/dto/like/like.input';
@@ -59,7 +59,7 @@ export class BoardArticleService {
 
 			return result;
 		} catch (err) {
-			console.log('Error, Service.model:', err.message);
+			console.log('Error, Service.model:', (err as Error).message);
 			throw new BadRequestException(Message.CREATE_FAILED);
 		}
 	}
@@ -95,6 +95,9 @@ export class BoardArticleService {
 				targetBoardArticle.articleCategory = this.normalizeArticleCategory(rawCategory) as any;
 			}
 		}
+		if (targetBoardArticle) {
+			this.normalizeArticleRecord(targetBoardArticle);
+		}
 		return targetBoardArticle;
 	}
 
@@ -128,41 +131,35 @@ export class BoardArticleService {
 		return result;
 	}
 
-	public async getBoardArticles(memberId: ObjectId, input: BoardArticlesInquiry): Promise<BoardArticles> {
-		const { articleCategory, text } = input.search;
-		const match: T = { articleStatus: BoardArticleStatus.ACTIVE };
-		const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };
+	private buildArticleExcerpt(content?: string | null): string {
+		if (!content) return '';
+		const plain = String(content).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+		return plain.length > 120 ? `${plain.slice(0, 120)}…` : plain;
+	}
 
-		if (articleCategory) match.articleCategory = articleCategory;
-		if (text) match.articleTitle = { $regex: new RegExp(text, 'i') }; // ?
-		if (input.search?.memberId) {
-			match.memberId = shapeIntoMongoObjectId(input.search.memberId);
+	private normalizeArticleRecord(article: BoardArticle): void {
+		article.articleViews = article.articleViews ?? 0;
+		article.articleLikes = article.articleLikes ?? 0;
+		article.articleComments = article.articleComments ?? 0;
+		article.articleContent = article.articleContent ?? '';
+		article.articleImage = article.articleImage ?? [];
+	}
+
+	private shapeLiteArticles(list: BoardArticle[]): void {
+		for (const item of list) {
+			this.normalizeArticleRecord(item);
+			item.articleExcerpt = this.buildArticleExcerpt(item.articleContent);
+			item.articleContent = '';
 		}
+	}
 
-		console.log('match:', match);
+	private finalizeArticleList(list: BoardArticle[]): void {
+		for (const item of list) {
+			this.normalizeArticleRecord(item);
+		}
+	}
 
-		const result = await this.boardArticleModel
-			.aggregate([
-				{ $match: match },
-				{ $sort: sort },
-				{
-					$facet: {
-						list: [
-							{ $skip: (input.page - 1) * input.limit },
-							{ $limit: input.limit },
-							lookupAuthMemberLiked(memberId),
-							lookupMember, // idni boshqa kollekshindan lookup qilyapmiz
-							{ $unwind: '$memberData' },
-						],
-						metaCounter: [{ $count: 'total' }],
-					},
-				},
-			])
-			.exec();
-
-		if (!result.length) return { list: [], metaCounter: [{ total: 0 }] };
-
-		const list = result[0].list ?? [];
+	private async normalizeListCategories(list: BoardArticle[]): Promise<void> {
 		const ids = list
 			.map((item: any) => item?.articleCategory)
 			.filter((val: any) => typeof val === 'string' && /^[a-f0-9]{24}$/i.test(val));
@@ -180,6 +177,92 @@ export class BoardArticleService {
 				item.articleCategory = this.normalizeArticleCategory(item?.articleCategory) as any;
 			}
 		}
+	}
+
+	public async getBoardArticleMeta(): Promise<BoardArticleMeta> {
+		const result = await this.boardArticleModel
+			.aggregate([
+				{ $match: { articleStatus: BoardArticleStatus.ACTIVE } },
+				{
+					$facet: {
+						total: [{ $count: 'count' }],
+						byCategory: [
+							{ $group: { _id: '$articleCategory', total: { $sum: 1 } } },
+							{ $project: { _id: 0, articleCategory: '$_id', total: 1 } },
+						],
+					},
+				},
+			])
+			.exec();
+
+		const facet = result?.[0] ?? { total: [], byCategory: [] };
+		const rawByCategory = facet.byCategory ?? [];
+		const ids = rawByCategory
+			.map((item: any) => item?.articleCategory)
+			.filter((val: any) => typeof val === 'string' && /^[a-f0-9]{24}$/i.test(val));
+
+		let idToName = new Map<string, string>();
+		if (ids.length) {
+			const cc = this.boardArticleModel.db.collection('communityCategories');
+			const categoryDocs = await cc
+				.find({ _id: { $in: ids.map((id: string) => new Types.ObjectId(id)) } })
+				.toArray();
+			idToName = new Map(categoryDocs.map((doc: any) => [String(doc._id), doc.name]));
+		}
+
+		const byCategory = rawByCategory.map((item: any) => ({
+			articleCategory: this.normalizeArticleCategory(item?.articleCategory, idToName),
+			total: item?.total ?? 0,
+		}));
+
+		return {
+			total: facet.total?.[0]?.count ?? 0,
+			byCategory,
+		};
+	}
+
+	public async getBoardArticles(memberId: ObjectId, input: BoardArticlesInquiry): Promise<BoardArticles> {
+		const { articleCategory, text } = input.search;
+		const match: T = { articleStatus: BoardArticleStatus.ACTIVE };
+		const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };
+		const lite = input.lite === true;
+		const memberLookup = lite ? lookupMemberLite : lookupMember;
+
+		if (articleCategory) match.articleCategory = articleCategory;
+		if (text) match.articleTitle = { $regex: new RegExp(text, 'i') };
+		if (input.search?.memberId) {
+			match.memberId = shapeIntoMongoObjectId(input.search.memberId);
+		}
+
+		const listPipeline: T[] = [
+			{ $skip: (input.page - 1) * input.limit },
+			{ $limit: input.limit },
+			lookupAuthMemberLiked(memberId),
+			memberLookup,
+			lite
+				? { $unwind: { path: '$memberData', preserveNullAndEmptyArrays: true } }
+				: { $unwind: '$memberData' },
+		];
+
+		const result = await this.boardArticleModel
+			.aggregate([
+				{ $match: match },
+				{ $sort: sort },
+				{
+					$facet: {
+						list: listPipeline as any[],
+						metaCounter: [{ $count: 'total' }],
+					},
+				},
+			])
+			.exec();
+
+		if (!result.length) return { list: [], metaCounter: [{ total: 0 }] };
+
+		const list = result[0].list ?? [];
+		if (lite) this.shapeLiteArticles(list);
+		else this.finalizeArticleList(list);
+		await this.normalizeListCategories(list);
 
 		return result[0];
 	}

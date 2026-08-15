@@ -67,6 +67,10 @@ export class BoardArticlesInquiry {
 	@IsNotEmpty()
 	@Field(() => BAISearch)
 	search: BAISearch;
+
+	@IsOptional()
+	@Field(() => Boolean, { nullable: true })
+	lite?: boolean;
 }
 
 @InputType()

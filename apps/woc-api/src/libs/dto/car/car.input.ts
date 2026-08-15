@@ -185,6 +185,22 @@ class CarInquirySearch {
 	@IsOptional()
 	@Field(() => String, { nullable: true })
 	text?: string;
+
+	@IsOptional()
+	@Field(() => [String], { nullable: true })
+	transmissionList?: string[];
+
+	@IsOptional()
+	@Field(() => [String], { nullable: true })
+	colorList?: string[];
+
+	@IsOptional()
+	@Field(() => [Int], { nullable: true })
+	seatsList?: number[];
+
+	@IsOptional()
+	@Field(() => String, { nullable: true })
+	categoryLabel?: string;
 }
 
 @InputType()

@@ -14,7 +14,7 @@ import { StatisticModifier, T } from '../../libs/types/common';
 import { ViewGroup } from '../../libs/enums/view.enum';
 import { ViewService } from '../view/view.service';
 import { CarUpdate } from '../../libs/dto/car/car.update';
-import * as moment from 'moment';
+import moment from 'moment';
 import { lookupAuthMemberLiked, lookupMember, shapeIntoMongoObjectId } from '../../libs/config';
 import { LikeInput } from '../../libs/dto/like/like.input';
 import { LikeGroup } from '../../libs/enums/like.enum';
@@ -61,7 +61,7 @@ export class CarService {
 			});
 			return result;
 		} catch (err) {
-			console.log('Error, Service.model:', err.message);
+			console.log('Error, Service.model:', (err as Error).message);
 			throw new BadRequestException(Message.CREATE_FAILED);
 		}
 	}
@@ -128,7 +128,6 @@ export class CarService {
 		const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };
 
 		this.shapeMatchQuery(match, input);
-		console.log('match:', match);
 
 		const result = await this.carModel
 			.aggregate([
@@ -189,8 +188,6 @@ export class CarService {
 			match.memberId = shapeIntoMongoObjectId(input.search.memberId);
 		}
 
-		console.log('getDealerCars match:', match);
-
 		const result = await this.carModel
 			.aggregate([
 				{ $match: match },
@@ -226,15 +223,29 @@ export class CarService {
 			mileageRange,
 			periodsRange,
 			text,
+			transmissionList,
+			colorList,
+			seatsList,
+			categoryLabel,
 		} = input.search;
 		if (memberId) match.memberId = shapeIntoMongoObjectId(memberId);
 		if (locationList && locationList.length) match.carLocation = { $in: locationList };
 		if (typeList && typeList.length) match.carType = { $in: typeList };
 		if (brandList && brandList.length) {
-			const escaped = brandList.map((b) => String(b).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
-			match.carBrand = { $regex: new RegExp(`^(${escaped})$`, 'i') };
+			match.$or = brandList.flatMap((b) => {
+				const escaped = String(b).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+				const modelPattern = escaped.replace(/_/g, '[\\s_]+');
+				return [
+					{ carBrand: { $regex: new RegExp(escaped, 'i') } },
+					{ carModel: { $regex: new RegExp(modelPattern, 'i') } },
+				];
+			});
 		}
 		if (fuelTypeList && fuelTypeList.length) match.carFuelType = { $in: fuelTypeList };
+		if (transmissionList && transmissionList.length) match.carTransmission = { $in: transmissionList };
+		if (colorList && colorList.length) match.carColor = { $in: colorList };
+		if (seatsList && seatsList.length) match.carSeats = { $in: seatsList };
+		if (categoryLabel && categoryLabel !== 'all') match['carLabel.text'] = categoryLabel;
 
 		if (pricesRange) match.carPrice = { $gte: pricesRange.start, $lte: pricesRange.end };
 		if (yearsRange) match.carYear = { $gte: yearsRange.start, $lte: yearsRange.end };

@@ -21,6 +21,9 @@ export class BoardArticle {
 	@Field(() => String)
 	articleContent: string;
 
+	@Field(() => String, { nullable: true })
+	articleExcerpt?: string;
+
 	@Field(() => [String], { nullable: true })
 	articleImage?: string[];
 
@@ -62,4 +65,22 @@ export class BoardArticles {
 
 	@Field(() => [TotalCounter], { nullable: true })
 	metaCounter: TotalCounter[];
+}
+
+@ObjectType()
+export class BoardArticleCategoryCount {
+	@Field(() => BoardArticleCategory, { nullable: true })
+	articleCategory?: BoardArticleCategory;
+
+	@Field(() => Int)
+	total: number;
+}
+
+@ObjectType()
+export class BoardArticleMeta {
+	@Field(() => Int)
+	total: number;
+
+	@Field(() => [BoardArticleCategoryCount])
+	byCategory: BoardArticleCategoryCount[];
 }

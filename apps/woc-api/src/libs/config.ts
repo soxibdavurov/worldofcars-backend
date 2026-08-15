@@ -107,6 +107,16 @@ export const lookupAuthMemberFollowed = (input: LookupAuthMemberFollowed) => {
 	};
 };
 
+export const lookupMemberLite = {
+	$lookup: {
+		from: 'members',
+		localField: 'memberId',
+		foreignField: '_id',
+		pipeline: [{ $project: { _id: 1, memberNick: 1, memberFullName: 1, memberImage: 1 } }],
+		as: 'memberData',
+	},
+};
+
 export const lookupMember = {
 	$lookup: {
 		from: 'members',

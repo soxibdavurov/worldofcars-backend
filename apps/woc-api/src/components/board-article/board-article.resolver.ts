@@ -2,7 +2,7 @@ import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { BoardArticleService } from './board-article.service';
 import { UseGuards } from '@nestjs/common';
 import { AuthMember } from '../auth/decorators/authMember.decorator';
-import { BoardArticle, BoardArticles } from '../../libs/dto/board-article/board-article';
+import { BoardArticle, BoardArticleMeta, BoardArticles } from '../../libs/dto/board-article/board-article';
 import {
 	AllBoardArticlesInquiry,
 	BoardArticleInput,
@@ -67,6 +67,12 @@ export class BoardArticleResolver {
 	): Promise<BoardArticles> {
 		console.log('Query: getBoardArticles');
 		return await this.boardArticleService.getBoardArticles(memberId, input);
+	}
+
+	@UseGuards(WithoutGuard)
+	@Query(() => BoardArticleMeta)
+	public async getBoardArticleMeta(): Promise<BoardArticleMeta> {
+		return await this.boardArticleService.getBoardArticleMeta();
 	}
 
 	@UseGuards(AuthGuard)

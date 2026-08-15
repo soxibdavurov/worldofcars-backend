@@ -155,5 +155,13 @@ const CarSchema = new Schema(
 );
 
 CarSchema.index({ carType: 1, carLocation: 1, carTitle: 1, carPrice: 1 }, { unique: true });
+CarSchema.index({ carStatus: 1, createdAt: -1 });
+CarSchema.index({ carStatus: 1, carPrice: 1 });
+CarSchema.index({ carStatus: 1, carBrand: 1 });
+CarSchema.index({ carStatus: 1, carMileage: 1 });
+CarSchema.index({ carStatus: 1, carFuelType: 1 });
+CarSchema.index({ carStatus: 1, memberId: 1, createdAt: -1 });
+CarSchema.index({ carStatus: 1, carLikes: -1 });
+CarSchema.index({ carStatus: 1, 'carLabel.text': 1 });
 
 export default CarSchema;
