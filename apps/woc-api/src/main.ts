@@ -13,7 +13,16 @@ async function bootstrap() {
   app.enableCors({ origin: true, credentials: true });
 
   app.use(graphqlUploadExpress({ maxFileSize: 15000000, maxFiles: 10 }));
-  app.use("/uploads", express.static("./uploads"));
+  app.use(
+    "/uploads",
+    express.static("./uploads", {
+      maxAge: "365d",
+      immutable: true,
+      setHeaders: (res) => {
+        res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+      },
+    }),
+  );
 
   app.useWebSocketAdapter(new WsAdapter(app));
   await app.listen(process.env.PORT_API ?? 3000);

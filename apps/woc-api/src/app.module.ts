@@ -15,21 +15,26 @@ import { SocketModule } from './socket/socket.module';
     ConfigModule.forRoot(),
     GraphQLModule.forRoot({
       driver: ApolloDriver,
-      playground: true,
+      playground: process.env.NODE_ENV !== "production",
+      introspection: process.env.NODE_ENV !== "production",
       uploads: false,
       autoSchemaFile: true,
       formatError: (error: T) => {
-        console.log("error:", error);
+        if (process.env.NODE_ENV !== "production") {
+          console.log("error:", error);
+        }
         const grapQLFormattedError = {
           code: error?.extensions.code,
-          message: 
-          error?.extensions?.exception?.response?.message ||
-          error?.extensions?.response?.message ||
-          error?.message,
+          message:
+            error?.extensions?.exception?.response?.message ||
+            error?.extensions?.response?.message ||
+            error?.message,
         };
-        console.log("GRAPQL GLOBAL ERROR:", grapQLFormattedError);
+        if (process.env.NODE_ENV !== "production") {
+          console.log("GRAPQL GLOBAL ERROR:", grapQLFormattedError);
+        }
         return grapQLFormattedError;
-      }
+      },
     }),
     ComponentsModule,
     DatabaseModule,
