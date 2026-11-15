@@ -1,0 +1,21 @@
+# ~/phonefactory/Caddyfile oxiriga qo'shiladi (Caddy PhoneFactory compose'ida ishlaydi)
+car.dunyo.express {
+	encode zstd gzip
+
+	# API va rasmlar -> NestJS backend
+	@api path /graphql /graphql/* /uploads/*
+	handle @api {
+		reverse_proxy woc-api:3007
+	}
+
+	# websocket (chat) -> NestJS backend
+	@ws header Upgrade websocket
+	handle @ws {
+		reverse_proxy woc-api:3007
+	}
+
+	# qolgan hamma narsa -> Next.js
+	handle {
+		reverse_proxy woc-web:3000
+	}
+}

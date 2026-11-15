@@ -1,0 +1,32 @@
+# WorldOfCars: car.dunyo.express
+# VPS'da ~/worldofcars ichida turadi (qarang: deploy/README.md)
+services:
+  woc-api:
+    build: ./worldofcars-backend
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      PORT_API: 3007
+    volumes:
+      - woc-uploads:/app/uploads
+    restart: unless-stopped
+    networks: [default, proxy]
+
+  woc-web:
+    build:
+      context: ./worldofcars-next
+      args:
+        NEXT_PUBLIC_API_URL: https://car.dunyo.express
+        NEXT_PUBLIC_API_GRAPHQL_URL: https://car.dunyo.express/graphql
+    restart: unless-stopped
+    depends_on: [woc-api]
+    networks: [default, proxy]
+
+volumes:
+  woc-uploads:
+
+networks:
+  # PhoneFactory'dagi Caddy shu tarmoqda: u woc-api va woc-web ga shu orqali ulanadi
+  proxy:
+    name: phonefactory_default
+    external: true
